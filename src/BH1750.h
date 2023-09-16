@@ -16,13 +16,9 @@
 #ifndef BH1750_h
 #define BH1750_h
 
-#if (ARDUINO >= 100)
-#  include <Arduino.h>
-#else
-#  include <WProgram.h>
-#endif
 
-#include "Wire.h"
+//#include "Wire.h"
+#include <TinyI2CMaster.h>
 
 // Uncomment, to enable debug messages
 // #define BH1750_DEBUG
@@ -61,24 +57,22 @@ public:
     ONE_TIME_LOW_RES_MODE = 0x23
   };
 
-  BH1750(byte addr = 0x23);
-  bool begin(Mode mode = CONTINUOUS_HIGH_RES_MODE, byte addr = 0x23,
-             TwoWire* i2c = nullptr);
+  BH1750(uint8_t addr = 0x23);
+  bool begin(Mode mode = CONTINUOUS_HIGH_RES_MODE, uint8_t addr = 0x23,
+             TinyI2CMaster* i2c = nullptr);
   bool configure(Mode mode);
-  bool setMTreg(byte MTreg);
-  bool measurementReady(bool maxWait = false);
+  bool setMTreg(uint8_t MTreg);
   float readLightLevel();
 
 private:
-  byte BH1750_I2CADDR;
-  byte BH1750_MTreg = (byte)BH1750_DEFAULT_MTREG;
+  uint8_t BH1750_I2CADDR;
+  uint8_t BH1750_MTreg = (uint8_t)BH1750_DEFAULT_MTREG;
   // Correction factor used to calculate lux. Typical value is 1.2 but can
   // range from 0.96 to 1.44. See the data sheet (p.2, Measurement Accuracy)
   // for more information.
   const float BH1750_CONV_FACTOR = 1.2;
   Mode BH1750_MODE = UNCONFIGURED;
-  TwoWire* I2C;
+  TinyI2CMaster* I2C;
   unsigned long lastReadTimestamp;
 };
-
 #endif
